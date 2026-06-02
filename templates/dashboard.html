@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>DevSecOps Security Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="header">
+    <h1>DevSecOps Security Dashboard</h1>
+    <p>Automated security monitoring for CI/CD pipeline</p>
+</div>
+
+<div class="cards">
+
+    <div class="card">
+        <h2>Pipeline Status</h2>
+        <span class="status">{{ results.pipeline_status }}</span>
+    </div>
+
+    <div class="card">
+        <h2>Security Score</h2>
+        <div class="score">{{ results.security_score }}%</div>
+    </div>
+
+    <div class="card">
+        <h2>Total Tools</h2>
+        <div class="score">3</div>
+    </div>
+
+    <div class="card critical-card">
+        <h2>Critical</h2>
+        <div class="critical-number">{{ results.critical }}</div>
+    </div>
+
+    <div class="card high-card">
+        <h2>High</h2>
+        <div class="high-number">{{ results.high }}</div>
+    </div>
+
+    <div class="card medium-card">
+        <h2>Medium</h2>
+        <div class="medium-number">{{ results.medium }}</div>
+    </div>
+
+    <div class="card low-card">
+        <h2>Low</h2>
+        <div class="low-number">{{ results.low }}</div>
+    </div>
+
+</div>
+<table>
+    <tr>
+        <th>Tool</th>
+        <th>Purpose</th>
+        <th>Status</th>
+    </tr>
+
+    <tr>
+        <td>Semgrep</td>
+        <td>SAST Security Scan</td>
+        <td class="passed">{{ results.semgrep }}</td>
+    </tr>
+
+    <tr>
+        <td>Gitleaks</td>
+        <td>Secret Detection</td>
+        <td class="passed">{{ results.gitleaks }}</td>
+    </tr>
+
+    <tr>
+        <td>Trivy</td>
+        <td>Container Vulnerability Scan</td>
+        <td class="passed">{{ results.trivy }}</td>
+    </tr>
+
+</table>
+```
+
+</div>
+
+</body>
+</html>
