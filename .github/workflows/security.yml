@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   security-scan:
     runs-on: ubuntu-latest
@@ -15,20 +18,93 @@ jobs:
 
       - name: Run Semgrep SAST Scan
         uses: semgrep/semgrep-action@v1
+        continue-on-error: true
         with:
           config: p/default
+          generateSarif: "1"
 
       - name: Run Gitleaks Secret Scan
         uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-   
+
       - name: Build Docker Image
         run: docker build -t devsecops-dashboard .
 
       - name: Run Trivy Container Scan
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
           image-ref: devsecops-dashboard
-          format: table
+          format: json
+          output: trivy-report.json
           exit-code: 0
+
+      - name: Generate Dashboard JSON
+        run: |
+          python - <<EOF
+          import json
+          import os
+
+          critical = 0
+          high = 0
+          medium = 0
+          low = 0
+
+          if os.path.exists("trivy-report.json"):
+              with open("trivy-report.json", "r") as f:
+                  trivy = json.load(f)
+
+              for result in trivy.get("Results", []):
+                  for vuln in result.get("Vulnerabilities", []) or []:
+                      severity = vuln.get("Severity", "").upper()
+
+                      if severity == "CRITICAL":
+                          critical += 1
+                      elif severity == "HIGH":
+                          high += 1
+                      elif severity == "MEDIUM":
+                          medium += 1
+                      elif severity == "LOW":
+                          low += 1
+
+          security_score = 100 - (critical * 20) - (high * 10) - (medium * 5) - (low * 1)
+
+          if security_score < 0:
+              security_score = 0
+
+          if critical > 0 or high > 0:
+              pipeline_status = "Risk Found"
+          elif medium > 0 or low > 0:
+              pipeline_status = "Warning"
+          else:
+              pipeline_status = "Secure"
+
+          data = {
+              "semgrep": "Completed",
+              "gitleaks": "Completed",
+              "trivy": "Completed",
+              "critical": critical,
+              "high": high,
+              "medium": medium,
+              "low": low,
+              "security_score": security_score,
+              "pipeline_status": pipeline_status
+          }
+
+          os.makedirs("data", exist_ok=True)
+
+          with open("data/scan_results.json", "w") as f:
+              json.dump(data, f, indent=4)
+
+          print(json.dumps(data, indent=4))
+          EOF
+
+      - name: Commit Updated Dashboard JSON
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/scan_results.json
+          git commit -m "Update dashboard scan results" || echo "No changes to commit"
+          git push

@@ -60,26 +60,4 @@ color:#22c55e;
 font-weight:bold;
 }
 
-.critical-number{
-    color:#ef4444;
-    font-size:48px;
-    font-weight:bold;
-}
 
-.high-number{
-    color:#f97316;
-    font-size:48px;
-    font-weight:bold;
-}
-
-.medium-number{
-    color:#eab308;
-    font-size:48px;
-    font-weight:bold;
-}
-
-.low-number{
-    color:#22c55e;
-    font-size:48px;
-    font-weight:bold;
-}
