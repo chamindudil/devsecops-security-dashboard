@@ -22,3 +22,13 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   
+      - name: Build Docker Image
+        run: docker build -t devsecops-dashboard .
+
+      - name: Run Trivy Container Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: devsecops-dashboard
+          format: table
+          exit-code: 0
