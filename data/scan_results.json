@@ -1,11 +1,11 @@
 {
-  "semgrep": "Passed",
-  "gitleaks": "Passed",
-  "trivy": "Passed",
-  "critical": 0,
-  "high": 1,
-  "medium": 3,
-  "low": 5,
-  "security_score": 95,
-  "pipeline_status": "Secure"
+    "semgrep": "Completed",
+    "gitleaks": "Completed",
+    "trivy": "Completed",
+    "critical": 21,
+    "high": 169,
+    "medium": 624,
+    "low": 974,
+    "security_score": 0,
+    "pipeline_status": "Risk Found"
 }
