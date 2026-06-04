@@ -41,6 +41,21 @@ jobs:
           output: trivy-report.json
           exit-code: 0
 
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: "devsecops-security-dashboard"
+          path: "."
+          format: "HTML"
+          out: "dependency-check-report"
+        continue-on-error: true
+
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: dependency-check-report
+
       - name: Generate Dashboard JSON
         run: |
           python - <<EOF
