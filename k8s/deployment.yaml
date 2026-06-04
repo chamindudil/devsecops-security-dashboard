@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsecops-dashboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devsecops-dashboard
+  template:
+    metadata:
+      labels:
+        app: devsecops-dashboard
+    spec:
+      containers:
+        - name: devsecops-dashboard
+          image: devsecops-dashboard:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
