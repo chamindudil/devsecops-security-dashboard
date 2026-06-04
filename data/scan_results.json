@@ -3,9 +3,9 @@
     "gitleaks": "Completed",
     "trivy": "Completed",
     "critical": 21,
-    "high": 169,
-    "medium": 624,
-    "low": 974,
+    "high": 171,
+    "medium": 629,
+    "low": 976,
     "security_score": 0,
     "pipeline_status": "Risk Found"
 }
