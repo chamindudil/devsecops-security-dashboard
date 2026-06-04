@@ -3,7 +3,7 @@ import json
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def dashboard():
     with open("data/scan_results.json", "r") as file:
         results = json.load(file)
